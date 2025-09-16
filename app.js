@@ -5,12 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileUpload = require('express-fileupload');
 const mongoose = require('mongoose');
+const session=require('express-session');
 mongoose.connect('mongodb://127.0.0.1:27017/curdop')
 .then(()=>console.log("DB is Conected"))
 .catch((err)=> console.log("error in DB coonection"+ err))
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 
 var app = express();
 
@@ -24,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -1,0 +1,13 @@
+hello , <%=mya%>
+    <a href="/logout">logout</a>
+    <p id="time"></p>
+    <script>
+        var count = 0;
+        setInterval(function () {
+            document.getElementById("time").innerHTML = count;
+            count++;
+            if (count == 60) {
+                window.location = "/logout";
+            }
+        }, 1000)
+    </script>

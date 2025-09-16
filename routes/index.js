@@ -69,25 +69,54 @@ router.post("/update-product-process/:id", function (req, res, next) {
     });
 });
 
-
 router.get("/fileUpload", function (req, res, next) {
   res.render("fileUpload-form");
 });
 
-
 router.post("/fileUpload", function (req, res, next) {
-var myfile = req.files.file123;
-console.log(myfile);
-myfile.mv("public/uploads/"+myfile.name, function(err){
-  if(err)
-  {
-    res.send(err);  
+  var myfile = req.files.file123;
+  if (myfile.size >= 1000000) {
+    res.send(
+      "file size must be lessthan 1 MB" +
+        " your file size is" +
+        " " +
+        myfile.size / 1000000 +
+        "MB"
+    );
+  } else {
+    console.log(myfile);
+    myfile.mv("public/uploads/" + myfile.name, function (err) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send("File Uploaded Successfully");
+      }
+    });
   }
-  else
-  {
-    res.send("File Uploaded Successfully");
+});
+
+router.get("/login", function (req, res, next) {
+  res.render("login");
+});
+
+router.post("/login", function (req, res, next) {
+  var a = req.body.txt1;
+  req.session.uname = a;
+  res.redirect("/dashbord");
+});
+
+router.get("/dashbord", function (req, res, next) {
+  if (req.session.uname) {
+    var a = req.session.uname;
+    res.render("dashbord", { mya: a });
+  } else {
+    res.redirect("/login");
   }
-})
+});
+router.get("/logout", function (req, res, next) {
+  req.session.destroy(function (err) {
+    res.redirect("/login");
+  });
 });
 
 module.exports = router;
